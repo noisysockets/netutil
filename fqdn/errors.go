@@ -1,0 +1,76 @@
+// SPDX-License-Identifier: MPL-2.0
+/*
+ * Copyright (C) 2024 The Noisy Sockets Authors.
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * Portions of this file are based on code originally:
+ *
+ * Copyright since 2015 Showmax s.r.o.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package fqdn
+
+import "fmt"
+
+// Error for cases when os.Hostname() fails.
+var ErrHostnameFailed = errHostnameFailed{}
+
+// Error for cases when we could not found fqdn for whatever reason.
+var ErrFqdnNotFound = errFqdnNotFound{}
+
+type errHostnameFailed struct {
+	cause error
+}
+
+func (e errHostnameFailed) Error() string {
+	return fmt.Sprintf("could not get hostname: %v", e.cause)
+}
+
+func (e errHostnameFailed) Unwrap() error {
+	return e.cause
+}
+
+func (e errHostnameFailed) Is(target error) bool {
+	switch target.(type) {
+	case errHostnameFailed:
+		return true
+	default:
+		return false
+	}
+}
+
+type errFqdnNotFound struct {
+	cause error
+}
+
+func (e errFqdnNotFound) Error() string {
+	return fmt.Sprintf("fqdn hostname not found: %v", e.cause)
+}
+
+func (e errFqdnNotFound) Unwrap() error {
+	return e.cause
+}
+
+func (e errFqdnNotFound) Is(target error) bool {
+	switch target.(type) {
+	case errFqdnNotFound:
+		return true
+	default:
+		return false
+	}
+}

@@ -17,5 +17,8 @@ test:
   COPY go.* .
   RUN go mod download
   COPY . .
-  RUN go test -coverprofile=coverage.out -v ./...
+  HOST demo.example.com 127.0.1.1
+  HOST demo 127.0.1.1
+  RUN --privileged hostname demo.example.com \
+    && go test -coverprofile=coverage.out -v ./...
   SAVE ARTIFACT coverage.out AS LOCAL coverage.out
