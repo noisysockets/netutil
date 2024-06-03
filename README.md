@@ -1,6 +1,6 @@
 # netutil
 
-Various networking in Go related helpers.
+Utilities for working with networks and addresses in Go.
 
 ## Packages
 
