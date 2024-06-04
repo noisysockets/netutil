@@ -29,6 +29,7 @@
  * SOFTWARE.
  */
 
+// Package waitpool provides a bounded sync.Pool.
 package waitpool
 
 import (
@@ -36,8 +37,7 @@ import (
 	"sync/atomic"
 )
 
-// WaitPool is a sync.Pool that blocks on Get when the maximum number of items
-// are in use.
+// WaitPool is a bounded sync.Pool. It is safe for concurrent use.
 type WaitPool[T any] struct {
 	pool  sync.Pool
 	cond  sync.Cond
@@ -46,9 +46,8 @@ type WaitPool[T any] struct {
 	max   uint32
 }
 
-// New creates a new WaitPool with a maximum size and a function to create new
-// items. If max is 0, the pool has no maximum size and effectively becomes a
-// typed sync.Pool.
+// New creates a new WaitPool with a maximum size of max. If max is 0, the pool
+// is unbounded.
 func New[T any](max uint32, new func() T) *WaitPool[T] {
 	p := &WaitPool[T]{pool: sync.Pool{New: func() any { return new() }}, max: max}
 	p.cond = sync.Cond{L: &p.lock}

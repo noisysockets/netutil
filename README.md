@@ -10,3 +10,4 @@ Utilities for working with networks and addresses in Go.
 - `triemap`: A trie-based map for storing and querying IP prefixes.
 - `uint128`: A 128-bit unsigned integer type.
 - `ula`: Generate IPv6 Unique Local Addresses (ULA) as per RFC 4193.
+- `waitpool`: A bounded equivalent of `sync.Pool`.
