@@ -99,7 +99,7 @@ var testCases = []struct {
 }
 
 func TestTrieMap(t *testing.T) {
-	trieMap := triemap.NewTrieMap[string]()
+	trieMap := triemap.New[string]()
 	for value, prefixes := range testPrefixes {
 		for _, prefix := range prefixes {
 			trieMap.Insert(prefix, value)
@@ -120,7 +120,7 @@ func TestTrieMap(t *testing.T) {
 }
 
 func TestTrieMapEmpty(t *testing.T) {
-	trieMap := triemap.NewTrieMap[string]()
+	trieMap := triemap.New[string]()
 	v, contains := trieMap.Get(netip.MustParseAddr("127.0.0.1"))
 	if contains || v != "" {
 		t.Fatalf("empty TrieMap should not contain anything")
@@ -133,7 +133,7 @@ func TestTrieMapEmpty(t *testing.T) {
 
 func TestTrieMapSlashZero(t *testing.T) {
 	// test the ??? case that we insert into the root with a /0
-	trieMap := triemap.NewTrieMap[string]()
+	trieMap := triemap.New[string]()
 	trieMap.Insert(netip.MustParsePrefix("0.0.0.0/0"), "all-ipv4")
 	trieMap.Insert(netip.MustParsePrefix("::/0"), "all-ipv6")
 	v, contains := trieMap.Get(netip.MustParseAddr("127.0.0.1"))
@@ -147,7 +147,7 @@ func TestTrieMapSlashZero(t *testing.T) {
 }
 
 func TestTrieMapRemove(t *testing.T) {
-	trieMap := triemap.NewTrieMap[string]()
+	trieMap := triemap.New[string]()
 	for value, prefixes := range testPrefixes {
 		for _, prefix := range prefixes {
 			trieMap.Insert(prefix, value)
@@ -182,7 +182,7 @@ func TestTrieMapRemove(t *testing.T) {
 }
 
 func TestTrieMapIPv4(t *testing.T) {
-	trieMap := triemap.NewTrieMap[string]()
+	trieMap := triemap.New[string]()
 
 	trieMap.Insert(netip.MustParsePrefix("192.168.4.0/24"), "a")
 	trieMap.Insert(netip.MustParsePrefix("192.168.4.4/32"), "b")
@@ -281,7 +281,7 @@ func TestTrieMapIPv4(t *testing.T) {
 }
 
 func TestTrieMapIPv6(t *testing.T) {
-	trieMap := triemap.NewTrieMap[string]()
+	trieMap := triemap.New[string]()
 
 	trieMap.Insert(netip.MustParsePrefix("2607:5300:6000:6b00::c05f:543/128"), "d")
 	trieMap.Insert(netip.MustParsePrefix("2607:5300:6000:6b00::/64"), "c")

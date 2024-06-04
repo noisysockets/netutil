@@ -64,8 +64,8 @@ type TrieMap[V comparable] struct {
 	valueToKey map[V]int
 }
 
-// NewTrieMap[V] returns a new, properly allocated TrieMap[V]
-func NewTrieMap[V comparable]() *TrieMap[V] {
+// New[V] returns a new, properly allocated TrieMap[V]
+func New[V comparable]() *TrieMap[V] {
 	return &TrieMap[V]{
 		keyToValue: make(map[int]V),
 		valueToKey: make(map[V]int),
