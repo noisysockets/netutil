@@ -2,7 +2,11 @@ module github.com/noisysockets/netutil
 
 go 1.22.0
 
-require github.com/stretchr/testify v1.9.0
+require (
+	dario.cat/mergo v1.0.0
+	github.com/jinzhu/copier v0.4.0
+	github.com/stretchr/testify v1.9.0
+)
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
