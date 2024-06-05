@@ -54,6 +54,8 @@ func New[T any](max uint32, new func() T) *WaitPool[T] {
 	return p
 }
 
+// Get returns an item from the pool. If the pool is bounded and all items are
+// in use, Get will block until an item is available.
 func (p *WaitPool[T]) Get() T {
 	if p.max != 0 {
 		p.lock.Lock()
@@ -66,6 +68,7 @@ func (p *WaitPool[T]) Get() T {
 	return p.pool.Get().(T)
 }
 
+// Put adds x to the pool.
 func (p *WaitPool[T]) Put(x T) {
 	p.pool.Put(x)
 	if p.max == 0 {
@@ -73,4 +76,9 @@ func (p *WaitPool[T]) Put(x T) {
 	}
 	p.count.Add(-1)
 	p.cond.Signal()
+}
+
+// Count returns the number of items in use.
+func (p *WaitPool[T]) Count() int {
+	return int(p.count.Load())
 }

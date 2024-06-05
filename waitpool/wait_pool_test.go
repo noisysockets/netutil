@@ -25,6 +25,9 @@ func TestWaitPool(t *testing.T) {
 		bufs[i] = p.Get()
 	}
 
+	count := p.Count()
+	require.Equal(t, 10, count)
+
 	done := make(chan struct{})
 	go func() {
 		defer close(done)
