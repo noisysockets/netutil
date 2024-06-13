@@ -14,6 +14,7 @@ import (
 	"math"
 	"net"
 	"os"
+	"sync"
 	"time"
 
 	"github.com/noisysockets/netutil/waitpool"
@@ -26,6 +27,7 @@ var _ net.PacketConn = (*packetMux)(nil)
 type packetMux struct {
 	conns         []net.PacketConn
 	packetPool    *waitpool.WaitPool[*readFromResult]
+	closeOnce     sync.Once
 	closing       chan struct{}
 	packets       chan *readFromResult
 	readDeadline  *time.Timer
@@ -72,15 +74,17 @@ func (mux *packetMux) LocalAddr() net.Addr {
 
 // Close closes the PacketMux by shutting down all underlying PacketConns.
 func (mux *packetMux) Close() error {
-	close(mux.closing)
-	mux.readDeadline.Reset(0)
-	mux.writeDeadline.Reset(0)
 	var errs []error
-	for _, conn := range mux.conns {
-		if err := conn.Close(); err != nil {
-			errs = append(errs, err)
+	mux.closeOnce.Do(func() {
+		close(mux.closing)
+		mux.readDeadline.Reset(0)
+		mux.writeDeadline.Reset(0)
+		for _, conn := range mux.conns {
+			if err := conn.Close(); err != nil {
+				errs = append(errs, err)
+			}
 		}
-	}
+	})
 	return errors.Join(errs...)
 }
 

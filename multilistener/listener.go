@@ -36,6 +36,7 @@ package multilistener
 import (
 	"errors"
 	"net"
+	"sync"
 )
 
 var _ net.Listener = &multiListener{}
@@ -44,6 +45,7 @@ var _ net.Listener = &multiListener{}
 // from multiple listeners.
 type multiListener struct {
 	listeners []net.Listener
+	closeOnce sync.Once
 	closing   chan struct{}
 	conns     chan acceptResults
 }
@@ -87,14 +89,16 @@ func (ml *multiListener) Addr() net.Addr {
 //
 // Calling Close() more than once will cause it to panic.
 func (ml *multiListener) Close() error {
-	close(ml.closing)
 	var errs []error
-	for i := range ml.listeners {
-		err := ml.listeners[i].Close()
-		if err != nil {
-			errs = append(errs, err)
+	ml.closeOnce.Do(func() {
+		close(ml.closing)
+		for i := range ml.listeners {
+			err := ml.listeners[i].Close()
+			if err != nil {
+				errs = append(errs, err)
+			}
 		}
-	}
+	})
 	return errors.Join(errs...)
 }
 
