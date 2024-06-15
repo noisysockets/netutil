@@ -501,3 +501,17 @@ func (u *Uint128) UnmarshalText(b []byte) error {
 	_, err := fmt.Sscan(string(b), u)
 	return err
 }
+
+// Bytes returns the little-endian byte representation of u.
+func (u Uint128) Bytes() [16]byte {
+	var b [16]byte
+	u.PutBytes(b[:])
+	return b
+}
+
+// BytesBE returns the big-endian byte representation of u.
+func (u Uint128) BytesBE() [16]byte {
+	var b [16]byte
+	u.PutBytesBE(b[:])
+	return b
+}

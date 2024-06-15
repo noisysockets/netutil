@@ -7,17 +7,17 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-package ula_test
+package cidr_test
 
 import (
 	"testing"
 
-	"github.com/noisysockets/netutil/ula"
+	"github.com/noisysockets/netutil/cidr"
 	"github.com/stretchr/testify/require"
 )
 
 func TestGenerate(t *testing.T) {
-	prefix, err := ula.Generate()
+	prefix, err := cidr.Generate()
 	require.NoError(t, err)
 
 	require.True(t, prefix.Addr().IsGlobalUnicast())
